@@ -1,40 +1,152 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Data Discovery Dashboard
+A hobby project for listing down data in a paginatable grid view.
 
-## Getting Started
+## Objectives
+1.) Fetch list of data from an exposed API endpoint.
+2.) Display the API response in a grid.
+3.) Infinite scrolling to paginate down the list.
+4.) Ability to multi-select data in the list.
+5.) A simple delete simulation for removing the selected data out of the state, with action confirmation to prevent accidental deletion.
+6.) Implement state management with React Context API (state, reducer, provider, etc.)
+7.) Simulate a loading scenario using setTimeout(), and implement loading screen using skeletons.
+8.) Perform useEffect clean-ups with callbacks, and fetch cleann-ups with the AbortController interface.
+9.) Static typing and code certainty with TypeScript
+10.) Implement basic CSS styling and responsive rules using TailwindCSS
 
-First, run the development server:
+## Architecture
+ ### Tech Stack
+1. React/Next (via `yarn create-app`)
+2. React Context API for state management (`Zustand` or `Redux` are great but for a small project like this might be overkill)
+3. Next API for backend
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+ ### Design Pattern
+ Here I showcase the basic implementation of the [**Atomic**](https://bradfrost.com/blog/post/atomic-web-design/) design pattern.
+ 
+ Inside the project, smaller and re-usable components are further broken down into their own components. The goal is to make the app more modular, flexible, and to strengthen the separation of concerns (SoC).
+ 
+ Inside the project, these smaller components is found within `./components` folder, particularly within the following sub-folders:
+ 
+ - `atoms/`
+ - `organisms/`
+ - `molecules/`
+ 
+ 
+ I also created a `utils/` folder to modularize common and potentially re-usable functionalities such as string manipulation, etc.
+
+ Still inside `./components/utils/` folder, I created `contexts/` which contains all the base files for store management purposes.
+
+### Static Data
+
+Another folder is`./components/data/` which contains all the static data we should have. Here we have the `companies.json` which is our primary mock data for the project. We can further enhance the whole app to fetch from a real data source such as an SQLite database, a NoSQL source, or even from a RDB. I strongly recommend to use [**Prisma**](https://www.prisma.io/) in this case to take advantage of the power of ORM.
+ 
+## Preparation & Installation
+
+Feel free to downgrade or upgrade based on your needs, but for this project, I used the following:
+
+- `yarn` 1.22.19
+- `node` 20.18.0
+- `react` 18
+- `next` 14.2.15
+- `tailwindcss` 3.4.1
+- 
+
+
+#### Clone Project
+First, clone the [**project**](https://github.com/michaeljarizala/data-discovery-dashboard.git).
+```
+$ git clone https://github.com/michaeljarizala/data-discovery-dashboard.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next, install the project in your machine
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+**yarn**
+```
+$ yarn install
+```
+> **NOTE:**
+> You may also use the `npm` command if your prefer, feel free to substitute it with the `yarn` command. But for simplicity of this documentation, I will use Yarn as the reference from hereon.
+> ```
+> $ npm install
+> ```
+> 
+> 
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Once above command is successful, then voila! The project is now ready - quite simple right?
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Running the App
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Now let's test that it is indeed working.
 
-## Learn More
+Let us first perform linting to make sure everything is written as it was.
 
-To learn more about Next.js, take a look at the following resources:
+```
+$ yarn lint
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✔ No ESLint warnings or errors
+✨  Done in 8.04s.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+If there are no linting errors, we are now ready to build our project.
 
-## Deploy on Vercel
+```
+$ yarn build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  ▲ Next.js 14.2.15
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+ ✓ Linting and checking validity of types    
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+ ✓ Collecting page data    
+ ✓ Generating static pages (3/3)
+ ✓ Collecting build traces    
+ ✓ Finalizing page optimization    
+
+Route (pages)                             Size     First Load JS
+┌ ○ /                                     3.16 kB        81.2 kB
+├   /_app                                 0 B              78 kB
+├ ○ /404                                  180 B          78.2 kB
+├ ƒ /api/companies                        0 B              78 kB
+└ ƒ /api/hello                            0 B              78 kB
++ First Load JS shared by all             81.3 kB
+  ├ chunks/framework-64ad27b21261a9ce.js  44.8 kB
+  ├ chunks/main-e5e349bb2d39155a.js       32.1 kB
+  └ other shared chunks (total)           4.29 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+✨  Done in 8.14s.
+```
+
+Awesome, it built successfully without errors! Let's run it and see.
+
+```
+$ yarn start
+
+▲ Next.js 14.2.15
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 252ms
+```
+
+It's running as expected. Open `http://localhost:300` in your browser.
+
+> **NOTE:**
+> On development, simply run the `dev` command and you may begin tweaking the app and see your changes as you do them.
+> ```
+> $ yarn dev
+> ```
+>
+
+## Screenshots
+##### Dashboard (loading state)
+![image Dashboard loading state](https://img001.prntscr.com/file/img001/JS2E_wwNQ3GHa3PSJwykxw.png)
+##### Dashboard (loaded state)
+![image Dashboard loaded state](https://img001.prntscr.com/file/img001/blbQUu9tRt-L2YMEjtCk_g.png)
+##### Dashboard (empty state)
+![image Dashboard empty state](https://img001.prntscr.com/file/img001/44K9MXzGR6ioHojTvHBiQw.png)
+##### Dashboard (multi selection)
+![image Dashboard multi selection](https://img001.prntscr.com/file/img001/gx_qR3L9QDmr6s9pBzBzvw.png)
+##### Dashboard (delete confirmation)
+![image Dashboard delete confirmation](https://img001.prntscr.com/file/img001/AD1ZTkwmRbO-aqF8PTfpng.png)
