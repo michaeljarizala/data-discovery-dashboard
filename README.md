@@ -1,6 +1,8 @@
 # Data Discovery Dashboard
 A hobby project for listing down data in a paginatable grid view.
 
+Demo to this project is available on [Vercel](https://data-discovery-dashboard.vercel.app/).
+
 ## Objectives
 1. Fetch list of data from an exposed API endpoint.
 2. Display the API response in a grid.

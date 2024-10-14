@@ -230,7 +230,7 @@ const Dashboard: React.FC = (): React.JSX.Element => {
           ">
             <div>
               You are about to delete {state.selectedCompanies.length}
-              {state.selectedCompanies.length > 2 ? ' companies' : ' company'}. Do
+              {state.selectedCompanies.length > 1 ? ' companies' : ' company'}. Do
               you want to continue?
             </div>
 
