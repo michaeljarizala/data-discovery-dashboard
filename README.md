@@ -129,7 +129,7 @@ $ yarn start
  ✓ Ready in 252ms
 ```
 
-It's running as expected. Open `http://localhost:3000` in your browser.
+It's running as expected. Open `http://localhost:3000` on your browser.
 
 > **NOTE:**
 > On development, simply run the `dev` command and you may begin tweaking the code and see your changes as you do them.
