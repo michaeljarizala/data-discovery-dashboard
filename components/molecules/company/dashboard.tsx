@@ -180,7 +180,9 @@ const Dashboard: React.FC = (): React.JSX.Element => {
             px-10
             bg-slate-200
             shadow-inner
-            shadow-xl"
+            shadow-xl
+            sticky
+            bottom-0"
         >
           <div className="
             flex
