@@ -9,7 +9,7 @@ A hobby project for listing down data in a paginatable grid view.
 5. A simple delete simulation for removing the selected data out of the state, with action confirmation to prevent accidental deletion.
 6. Implement state management with React Context API (state, reducer, provider, etc.)
 7. Simulate a loading scenario using setTimeout(), and implement loading screen using skeletons.
-8. Perform useEffect clean-ups with callbacks, and fetch cleann-ups with the AbortController interface.
+8. Perform useEffect clean-ups with callbacks, and fetch clean-ups with the AbortController interface.
 9. Static typing and code certainty with TypeScript
 10. Implement basic CSS styling and responsive rules using TailwindCSS
 
@@ -24,7 +24,7 @@ A hobby project for listing down data in a paginatable grid view.
  
  Inside the project, smaller and re-usable components are further broken down into their own components. The goal is to make the app more modular, flexible, and to strengthen the separation of concerns (SoC).
  
- Inside the project, these smaller components is found within `./components` folder, particularly within the following sub-folders:
+ Inside the project, these smaller components are found within `./components` folder, particularly within the following sub-folders:
  
  - `atoms/`
  - `organisms/`
@@ -33,7 +33,7 @@ A hobby project for listing down data in a paginatable grid view.
  
  I also created a `utils/` folder to modularize common and potentially re-usable functionalities such as string manipulation, etc.
 
- Still inside `./components/utils/` folder, I created `contexts/` which contains all the base files for store management purposes.
+ Still inside `./components/utils/` folder, I created `contexts/` which contains all the base files for state management purposes.
 
 ### Static Data
 
@@ -59,12 +59,11 @@ $ git clone https://github.com/michaeljarizala/data-discovery-dashboard.git
 
 Next, install the project in your machine
 
-**yarn**
 ```
 $ yarn install
 ```
 > **NOTE:**
-> You may also use the `npm` command if your prefer, feel free to substitute it with the `yarn` command. But for simplicity of this documentation, I will use Yarn as the reference from hereon.
+> If you prefer, you may also use the `npm` command - feel free to substitute it with `yarn`. But for simplicity of this documentation, I will use Yarn as the reference from hereon.
 > ```
 > $ npm install
 > ```
@@ -130,10 +129,10 @@ $ yarn start
  ✓ Ready in 252ms
 ```
 
-It's running as expected. Open `http://localhost:300` in your browser.
+It's running as expected. Open `http://localhost:3000` in your browser.
 
 > **NOTE:**
-> On development, simply run the `dev` command and you may begin tweaking the app and see your changes as you do them.
+> On development, simply run the `dev` command and you may begin tweaking the code and see your changes as you do them.
 > ```
 > $ yarn dev
 > ```
@@ -150,3 +149,5 @@ It's running as expected. Open `http://localhost:300` in your browser.
 ![image Dashboard multi selection](https://img001.prntscr.com/file/img001/gx_qR3L9QDmr6s9pBzBzvw.png)
 ##### Dashboard (delete confirmation)
 ![image Dashboard delete confirmation](https://img001.prntscr.com/file/img001/AD1ZTkwmRbO-aqF8PTfpng.png)
+
+### And there you go! You have successfully ran the app at this point.
