@@ -2,16 +2,16 @@
 A hobby project for listing down data in a paginatable grid view.
 
 ## Objectives
-1.) Fetch list of data from an exposed API endpoint.
-2.) Display the API response in a grid.
-3.) Infinite scrolling to paginate down the list.
-4.) Ability to multi-select data in the list.
-5.) A simple delete simulation for removing the selected data out of the state, with action confirmation to prevent accidental deletion.
-6.) Implement state management with React Context API (state, reducer, provider, etc.)
-7.) Simulate a loading scenario using setTimeout(), and implement loading screen using skeletons.
-8.) Perform useEffect clean-ups with callbacks, and fetch cleann-ups with the AbortController interface.
-9.) Static typing and code certainty with TypeScript
-10.) Implement basic CSS styling and responsive rules using TailwindCSS
+1. Fetch list of data from an exposed API endpoint.
+2. Display the API response in a grid.
+3. Infinite scrolling to paginate down the list.
+4. Ability to multi-select data in the list.
+5. A simple delete simulation for removing the selected data out of the state, with action confirmation to prevent accidental deletion.
+6. Implement state management with React Context API (state, reducer, provider, etc.)
+7. Simulate a loading scenario using setTimeout(), and implement loading screen using skeletons.
+8. Perform useEffect clean-ups with callbacks, and fetch cleann-ups with the AbortController interface.
+9. Static typing and code certainty with TypeScript
+10. Implement basic CSS styling and responsive rules using TailwindCSS
 
 ## Architecture
  ### Tech Stack
