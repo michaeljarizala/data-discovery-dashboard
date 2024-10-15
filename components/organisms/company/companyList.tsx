@@ -22,6 +22,7 @@ import CheckBox from "@/components/atoms/input/checkbox"
 import Button from "@/components/atoms/button"
 import { modalInitState, modalReducer } from "@/components/utils/contexts/modalContext"
 import { EPCompany } from "@/components/utils/interfaces/companyInterface"
+import Skeleton from "@/components/atoms/skeleton"
 
 
 {/*
@@ -254,8 +255,12 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
               </Card>
             )
           ) : (
-            <div className="flex w-full h-full justify-center items-center">
-              <div className="text-lg text-black">loading companies</div>
+            <div className="flex w-full h-full justify-center">
+              <div className="flex w-full flex-wrap gap-2 p-5">
+                <Skeleton /> <Skeleton /> <Skeleton />
+                <Skeleton /> <Skeleton /> <Skeleton />
+                <Skeleton /> <Skeleton /> <Skeleton />
+              </div>
             </div>
           )}
         </div>  

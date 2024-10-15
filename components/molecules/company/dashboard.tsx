@@ -22,7 +22,6 @@ import {
   companyReducer,
   initState
 } from "@/components/utils/contexts/companyContext"
-import Skeleton from "@/components/atoms/skeleton"
 import Modal from "@/components/organisms/modal"
 import { modalInitState, modalReducer } from "@/components/utils/contexts/modalContext"
 
@@ -72,12 +71,16 @@ const Dashboard: React.FC = (): React.JSX.Element => {
 
   return (
     <CompanyProvider>
-      <Suspense fallback={(
-        <div className="flex flex-wrap gap-2 p-5">
-          <Skeleton /> <Skeleton /> <Skeleton />
-          <Skeleton /> <Skeleton /> <Skeleton />
-        </div>
-      )}>
+      <Suspense fallback={
+        <div className="
+          flex
+          justify-center
+          items-center
+          text-lg
+          text-black
+          text-center"
+        >loading companies</div>
+      }>
         <CompanyList
           header="name"
           companyState={{ state, dispatch }}
