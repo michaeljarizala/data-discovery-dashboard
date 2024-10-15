@@ -5,7 +5,7 @@
   dynamic onChange event handler.
 */}
 
-import React, { ChangeEvent } from "react"
+import React, { ChangeEvent, MouseEvent } from "react"
 
 interface Props {
 	id: string
@@ -13,6 +13,7 @@ interface Props {
 	checked?: boolean
 	label?: string
 	onChange: (e:ChangeEvent<HTMLInputElement>) => void
+	onClick: (e:MouseEvent) => void
 }
 
 const CheckBox: React.FC<Props> = (props:Props): React.JSX.Element => {
@@ -21,7 +22,8 @@ const CheckBox: React.FC<Props> = (props:Props): React.JSX.Element => {
 		className,
 		label = "",
 		checked,
-		onChange
+		onChange,
+		onClick,
 	} = props
 
 	return (
@@ -38,6 +40,7 @@ const CheckBox: React.FC<Props> = (props:Props): React.JSX.Element => {
 					type="checkbox"
 					checked={checked}
 					onChange={onChange}
+					onClick={onClick}
 				/>
 				{label && (<span>{label}</span>)}
 			</label>

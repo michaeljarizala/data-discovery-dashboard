@@ -103,9 +103,9 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
     on each company card
   */}
   const handleCompanySelect = (item:Company
-    , e?:React.MouseEvent<HTMLDivElement>|React.ChangeEvent<HTMLInputElement>) => {
-      
+    ,e?:React.MouseEvent<HTMLDivElement>|React.ChangeEvent<HTMLInputElement>) => {
       e?.stopPropagation()
+      e?.nativeEvent.stopImmediatePropagation()
 
       if (!isSelectedCard(item)) {
         dispatch({
@@ -231,6 +231,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
                         id={`company_cb_${item.id}`}
                         checked={isSelectedCard(item)}
                         onChange={(e) => handleCompanySelect(item, e)}
+                        onClick={(e:React.MouseEvent) => e.stopPropagation()}
                       />
                     </div>
                   </div>
