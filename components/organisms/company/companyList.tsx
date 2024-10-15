@@ -53,7 +53,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
   } = props
 
   // setting up the list ref for infinite scrolling
-  const listRef = useRef<HTMLDivElement>(null)
+  const listObserver = useRef<HTMLDivElement>(null)
 
   // setting up  of the modal reducer hook
   const [modalState, modalDispatch] = useReducer(modalReducer, modalInitState)
@@ -71,7 +71,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
     let data:EPCompany = { data: [] } // return variable
 
     // begin fetching and assign result to 'data'
-    await fetch(`/api/companies?page=${p}&size=18}`, { signal })
+    await fetch(`/api/companies?page=${p}&size=15}`, { signal })
     .then((res) => res.json())
     .then((res): void => { data = res })
     .catch((err) => {
@@ -141,22 +141,12 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
       })
     }, 2000)
     
-    return () => {
-      fetchController.abort()
-    }
   }, [dispatch])
 
   // helper function for handling inifinte scrolling
-  const handleScroll = () => {
-    if (listRef.current) {
-      const {
-        scrollTop,
-        scrollHeight,
-        clientHeight,
-      } = listRef.current
-
-      // monitor if scrolling reaches the bottom
-      if (scrollTop + clientHeight >= scrollHeight) {
+  const handleScroll = ():IntersectionObserver => {
+    const observer = new IntersectionObserver((o) => {
+      if (o[0].isIntersecting) {
         const nextPage = state.page + 1
         const nextPagePayload:INextPage = { page: nextPage, totalPages: 0 }
 
@@ -175,19 +165,37 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
         if (state.canPaginate) {
           loadCompanies(nextPage)
           .then((res) => {
-            nextPagePayload["totalPages"] = res.totalPages || nextPage
+            nextPagePayload["totalPages"] = res.totalPages || 0
             dispatch({ type: "NEXT_PAGE", payload: nextPagePayload })
             dispatch({ type: "APPEND_COMPANIES", payload: res.data })
           })
         }
       }
+    }, { threshold: 1 })
+
+    if (listObserver.current) {
+      observer.observe(listObserver.current)
     }
+
+    return observer
   }
+  useEffect(() => {
+    if (state.companies.length === 0)
+      return
+
+    const observer = handleScroll()
+
+    return () => {
+      if (listObserver.current) {
+        observer.unobserve(listObserver.current)
+      }
+    }
+  }, [listObserver, state, handleScroll])
 
   return (
     <>
       <div className="flex flex-col h-[90vh]">
-        <div ref={listRef} className="
+        <div className="
             flex
             flex-wrap
             gap-5
@@ -195,7 +203,6 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
             h-[100%]
             overflow-y-scroll
           "
-          onScroll={handleScroll}
         >
           {state.companies && state.companies.length > 0 ?
             state.companies.map((item: Company): React.JSX.Element => (
@@ -266,7 +273,8 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
               </div>
             </div>
           )}
-        </div>  
+          <div ref={listObserver}></div>  
+        </div>
       </div>
       <div
         className="

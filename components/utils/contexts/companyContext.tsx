@@ -76,7 +76,7 @@ export const companyReducer = (state: State, action: Actions)
 : State => {
     switch(action.type) {
         case "LOAD_COMPANIES":
-            console.log("CompanyReducer LOAD_COMPANIES called", state.companies)
+            console.log("CompanyReducer LOAD_COMPANIES called")
             // Uncomment when caching should be enabled
             // if (JSON.parse(companiesCache).length === 0) {
             //     localStorage.setItem("companies"
@@ -88,8 +88,6 @@ export const companyReducer = (state: State, action: Actions)
             }
         case "NEXT_PAGE":
             console.log("CompanyReducer NEXT_PAGE called")
-            console.log(state)
-
             {/*
                 Control pagination by making sure the defined states
                 are only changed when there is a reason to paginate.
@@ -100,14 +98,12 @@ export const companyReducer = (state: State, action: Actions)
                 to determine whether pagination is allowed in this context.
             */}
             if (state.totalPages === 0 || state.page < state.totalPages) {
-                console.log("paginated")
                 return {
                     ...state,
                     page: action.payload.page,
                     totalPages: action.payload.totalPages,
                 }
             } else {
-                console.log("not paginated")
                 return {
                     ...state,
                     canPaginate: false
@@ -116,10 +112,11 @@ export const companyReducer = (state: State, action: Actions)
 
         case "APPEND_COMPANIES":
             console.log("CompanyReducer APPEND_COMPANIES called")
-            localStorage.setItem(
-                "companies", JSON.stringify([
-                    ...state.companies, ...action.payload])
-            )
+            // Uncomment when caching should be enabled
+            // localStorage.setItem(
+            //     "companies", JSON.stringify([
+            //         ...state.companies, ...action.payload])
+            // )
             return {
                 ...state,
                 companies: [...state.companies, ...action.payload],
@@ -144,7 +141,6 @@ export const companyReducer = (state: State, action: Actions)
             console.log("CompanyReducer REMOVE_COMPANIES called")
             const updatedCompanies = state.companies.filter(
                 (item) => !action.payload.some(rItm => rItm.id === item.id))
-            console.log("updated items", updatedCompanies)
             return {
                 ...state,
                 companies: updatedCompanies,
