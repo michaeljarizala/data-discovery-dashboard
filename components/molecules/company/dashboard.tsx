@@ -72,105 +72,103 @@ const Dashboard: React.FC = (): React.JSX.Element => {
 
   return (
     <CompanyProvider>
-      <div>
-        <div
-          className="h-[90vh] xl:h-[80vh] mx-auto overflow-y-scroll"
-        >
-          <Suspense fallback={(
-            <div className="flex flex-wrap gap-2 p-5">
-              <Skeleton /> <Skeleton /> <Skeleton />
-              <Skeleton /> <Skeleton /> <Skeleton />
-            </div>
-          )}>
-            <CompanyList
-              header="name"
-              companyState={{ state, dispatch }}
-            />
-          </Suspense>
-        </div>
-        <div
-          className="
-            flex
-            flex-[10vh]
-            xl:h-[20vh]
-            gap-2
-            items-center
-            justify-end
-            gap-2
-            h-[10vh]
-            px-10
-            bg-slate-200
-            shadow-inner
-            shadow-xl
-            sticky
-            bottom-0"
-        >
-          <div className="
-            flex
-            flex-col
-            flex-[80%]
-          ">
-              <div className="
-              flex-[80%]
-              text-md
-              md:text-xl
-              xl:text-2xl
-              font-semibold
-              uppercase
-              tracking-wider
-            ">
-
-              Companies
-            </div>
-            <div className="text-slate-400 text-sm md:text-md lg:text-lg">
-              List of active companies
-            </div>
+      <div
+        className="h-[90vh] xl:h-[90vh] mx-auto overflow-y-scroll"
+      >
+        <Suspense fallback={(
+          <div className="flex flex-wrap gap-2 p-5">
+            <Skeleton /> <Skeleton /> <Skeleton />
+            <Skeleton /> <Skeleton /> <Skeleton />
           </div>
-          <div className="flex-[20%] flex items-center justify-end">
-            {state.selectedCompanies && state.selectedCompanies.length > 0 && (
-              <Button
-                label={`Remove (${state.selectedCompanies.length})`}
-                type="button"
-                onClick={() => {
-                  modalDispatch({
-                    type: "OPEN",
-                    payload: !modalState.open
-                  })
-                }}
-              />
-            )}
-          </div>
-        </div>
-        <Modal
-          modalState={{ state: modalState, dispatch: modalDispatch }}
-        >
-          <div className="
-            flex
-            flex-col
-            justify-between
-          ">
-            <div>
-              You are about to delete {state.selectedCompanies.length}
-              {state.selectedCompanies.length > 1 ? ' companies' : ' company'}. Do
-              you want to continue?
-            </div>
-
-            <div className="flex justify-end gap-2 mt-10">
-              <Button
-                label="Cancel"
-                theme="light"
-                onClick={() => {
-                  modalDispatch({
-                    type: 'OPEN',
-                    payload: !modalState.open
-                  })
-                }}
-              />
-              <Button label="Yes" onClick={handleDeletion} />
-            </div>
-          </div>
-        </Modal>
+        )}>
+          <CompanyList
+            header="name"
+            companyState={{ state, dispatch }}
+          />
+        </Suspense>
       </div>
+      <div
+        className="
+          flex
+          flex-[10vh]
+          xl:h-[10vh]
+          gap-2
+          items-center
+          justify-end
+          gap-2
+          h-[10vh]
+          px-10
+          bg-slate-200
+          shadow-inner
+          shadow-xl
+          sticky
+          bottom-0"
+      >
+        <div className="
+          flex
+          flex-col
+          flex-[80%]
+        ">
+            <div className="
+            flex-[80%]
+            text-md
+            md:text-xl
+            xl:text-2xl
+            font-semibold
+            uppercase
+            tracking-wider
+          ">
+
+            Companies
+          </div>
+          <div className="text-slate-400 text-sm md:text-md lg:text-lg">
+            List of active companies
+          </div>
+        </div>
+        <div className="flex-[20%] flex items-center justify-end">
+          {state.selectedCompanies && state.selectedCompanies.length > 0 && (
+            <Button
+              label={`Remove (${state.selectedCompanies.length})`}
+              type="button"
+              onClick={() => {
+                modalDispatch({
+                  type: "OPEN",
+                  payload: !modalState.open
+                })
+              }}
+            />
+          )}
+        </div>
+      </div>
+      <Modal
+        modalState={{ state: modalState, dispatch: modalDispatch }}
+      >
+        <div className="
+          flex
+          flex-col
+          justify-between
+        ">
+          <div>
+            You are about to delete {state.selectedCompanies.length}
+            {state.selectedCompanies.length > 1 ? ' companies' : ' company'}. Do
+            you want to continue?
+          </div>
+
+          <div className="flex justify-end gap-2 mt-10">
+            <Button
+              label="Cancel"
+              theme="light"
+              onClick={() => {
+                modalDispatch({
+                  type: 'OPEN',
+                  payload: !modalState.open
+                })
+              }}
+            />
+            <Button label="Yes" onClick={handleDeletion} />
+          </div>
+        </div>
+      </Modal>
     </CompanyProvider>
   )
 }

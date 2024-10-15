@@ -10,7 +10,6 @@
 import React, {
   useCallback,
   useEffect,
-  useReducer,
   useRef,
 } from "react"
 import Card from "@/components/atoms/card"
@@ -19,10 +18,6 @@ import NameBadge from "@/components/atoms/bage/nameBadge"
 import { Company } from "@/components/utils/interfaces/companyInterface"
 import { ICompanyContextValue } from "@/components/utils/contexts/companyContext"
 import CheckBox from "@/components/atoms/input/checkbox"
-import {
-  companyReducer,
-  initState
-} from "@/components/utils/contexts/companyContext"
 
 
 {/*
@@ -54,9 +49,6 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
 
   // setting up the list ref for infinite scrolling
   const listRef = useRef<HTMLDivElement>(null)
-
-  // setting up of the reducer hook
-  const [companyState = state, companyDispatch = dispatch] = useReducer(companyReducer, initState)
 
   {/*
     Helper function for fetching companies
@@ -104,12 +96,12 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
   */}
   const handleCheckSelect = (e:React.ChangeEvent<HTMLInputElement>, item:Company) => {
     if (!isSelectedCard(item)) {
-      companyDispatch({
+      dispatch({
         type: 'SELECT_COMPANIES',
         payload: item,
       })
     } else {
-      companyDispatch({
+      dispatch({
         type: 'DESELECT_COMPANIES',
         payload: item,
       })
@@ -132,7 +124,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
     setTimeout(() => {
       loadCompanies(1, fetchSignal)
       .then((data) => {
-        companyDispatch({ type: "LOAD_COMPANIES", payload: data })
+        dispatch({ type: "LOAD_COMPANIES", payload: data })
         // setLoading(false)
       })
     }, 2000)
@@ -140,7 +132,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
     return () => {
       fetchController.abort()
     }
-  }, [companyDispatch])
+  }, [dispatch])
 
   // helper function for handling inifinte scrolling
   const handleScroll = () => {
@@ -158,8 +150,8 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
         const pageStep = 1
         loadCompanies(nextPage)
         .then((res) => {
-          companyDispatch({ type: "NEXT_PAGE", payload: pageStep })
-          companyDispatch({ type: "APPEND_COMPANIES", payload: res })
+          dispatch({ type: "NEXT_PAGE", payload: pageStep })
+          dispatch({ type: "APPEND_COMPANIES", payload: res })
         })
       }
     }
@@ -177,8 +169,8 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
       `}
       onScroll={handleScroll}
     >
-      {companyState.companies && companyState.companies.length > 0 ?
-        companyState.companies.map((item: Company): React.JSX.Element => (
+      {state.companies && state.companies.length > 0 ?
+        state.companies.map((item: Company): React.JSX.Element => (
           <Card key={item.id}
             className={`
               !flex-[100%]
