@@ -16,14 +16,11 @@
 */}
 
 import React, { useEffect, useReducer, useState, lazy, Suspense } from "react"
-import Button from "@/components/atoms/button"
 import {
   CompanyProvider,
   companyReducer,
   initState
 } from "@/components/utils/contexts/companyContext"
-import Modal from "@/components/organisms/modal"
-import { modalInitState, modalReducer } from "@/components/utils/contexts/modalContext"
 
 const CompanyList = lazy(() => import("@/components/organisms/company/companyList"))
 
@@ -36,21 +33,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
 
   // setting up of the reducer hook
   const [state, dispatch] = useReducer(companyReducer, initState)
-
-  // setting up  of the modal reducer hook
-  const [modalState, modalDispatch] = useReducer(modalReducer, modalInitState)
-
-  // helper function for handling data deletion
-  const handleDeletion = () => {
-    dispatch({
-      type: 'REMOVE_COMPANIES',
-      payload: state.selectedCompanies
-    })
-    modalDispatch({
-      type: 'OPEN',
-      payload: !modalState.open
-    })
-  }
   
   // set loading to true
   useEffect(() => {
@@ -86,35 +68,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
           companyState={{ state, dispatch }}
         />
       </Suspense>
-      <Modal
-        modalState={{ state: modalState, dispatch: modalDispatch }}
-      >
-        <div className="
-          flex
-          flex-col
-          justify-between
-        ">
-          <div>
-            You are about to delete {state.selectedCompanies.length}
-            {state.selectedCompanies.length > 1 ? ' companies' : ' company'}. Do
-            you want to continue?
-          </div>
-
-          <div className="flex justify-end gap-2 mt-10">
-            <Button
-              label="Cancel"
-              theme="light"
-              onClick={() => {
-                modalDispatch({
-                  type: 'OPEN',
-                  payload: !modalState.open
-                })
-              }}
-            />
-            <Button label="Yes" onClick={handleDeletion} />
-          </div>
-        </div>
-      </Modal>
     </CompanyProvider>
   )
 }

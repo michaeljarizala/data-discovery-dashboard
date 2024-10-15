@@ -20,9 +20,10 @@ import { Company, INextPage } from "@/components/utils/interfaces/companyInterfa
 import { ICompanyContextValue } from "@/components/utils/contexts/companyContext"
 import CheckBox from "@/components/atoms/input/checkbox"
 import Button from "@/components/atoms/button"
-import { modalInitState, modalReducer } from "@/components/utils/contexts/modalContext"
 import { EPCompany } from "@/components/utils/interfaces/companyInterface"
 import Skeleton from "@/components/atoms/skeleton"
+import Modal from "@/components/organisms/modal"
+import { modalInitState, modalReducer, ModalProvider } from "@/components/utils/contexts/modalContext"
 
 
 {/*
@@ -118,6 +119,18 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
           payload: item,
         })
       }
+  }
+
+  // helper function for handling data deletion
+  const handleDeletion = () => {
+    dispatch({
+      type: 'REMOVE_COMPANIES',
+      payload: state.selectedCompanies
+    })
+    modalDispatch({
+      type: 'OPEN',
+      payload: !modalState.open
+    })
   }
 
   // ==== useEffect calls ====
@@ -328,6 +341,40 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
           )}
         </div>
       </div>
+
+      <ModalProvider>
+        <Modal
+          modalState={{ state: modalState, dispatch: modalDispatch }}
+        >
+          <div className="
+            flex
+            flex-col
+            justify-between
+            z-999999
+            text-black
+          ">
+            <div>
+              You are about to delete {state.selectedCompanies.length}
+              {state.selectedCompanies.length > 1 ? ' companies' : ' company'}. Do
+              you want to continue?
+            </div>
+
+            <div className="flex justify-end gap-2 mt-10">
+              <Button
+                label="Cancel"
+                theme="light"
+                onClick={() => {
+                  modalDispatch({
+                    type: 'OPEN',
+                    payload: !modalState.open
+                  })
+                }}
+              />
+              <Button label="Yes" onClick={handleDeletion} />
+            </div>
+          </div>
+        </Modal>
+      </ModalProvider>
     </>
   )
 }
