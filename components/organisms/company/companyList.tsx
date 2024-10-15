@@ -175,6 +175,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
         bg-slate-100
         h-[90vh]
       `}
+      onScroll={handleScroll}
     >
       {companyState.companies && companyState.companies.length > 0 ?
         companyState.companies.map((item: Company): React.JSX.Element => (

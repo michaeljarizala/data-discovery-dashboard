@@ -15,7 +15,7 @@
   on the selected items
 */}
 
-import React, { useEffect, useReducer, useRef, useState, lazy, Suspense } from "react"
+import React, { useEffect, useReducer, useState, lazy, Suspense } from "react"
 // import CompanyList from "@/components/organisms/company/companyList"
 import Button from "@/components/atoms/button"
 import { Company } from "@/components/utils/interfaces/companyInterface"
