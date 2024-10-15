@@ -7,7 +7,7 @@ type Data = {
   size: number,
   totalItems: number,
   totalPages: number,
-  items: Company[],
+  data: Company[],
 };
 
 export default async function handler(
@@ -29,6 +29,6 @@ export default async function handler(
         size: pS,
         totalItems: companies.length,
         totalPages: Math.ceil(companies.length / pS),
-        items: pItms
+        data: pItms
     })
 }

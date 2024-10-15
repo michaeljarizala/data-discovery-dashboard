@@ -1,11 +1,13 @@
 import { createContext, useReducer } from "react"
-import { Company } from "../interfaces/companyInterface"
+import { Company, INextPage } from "../interfaces/companyInterface"
 
 // Declaration of Company state
 export type State = {
     companies: Company[]
     selectedCompanies: Company[]
     page: number
+    totalPages: number
+    canPaginate: boolean
 }
 
 // Declaration of Company actions
@@ -15,7 +17,7 @@ type Load = { // use for initially loading companies
 }
 type NextPage = { // use for inifinite scrolling
     readonly type: "NEXT_PAGE"
-    readonly payload: number
+    readonly payload: INextPage
 }
 type AppendCompanies = { // use for adding item to the list
     readonly type: "APPEND_COMPANIES"
@@ -33,17 +35,23 @@ type RemoveCompanies = { // use for company deletion
     readonly type: "REMOVE_COMPANIES"
     readonly payload: Company[]
 }
+type UpdateTotalPages = { // use for company deletion
+    readonly type: "UPDATE_TOTAL_PAGES"
+    readonly payload: number
+}
 
 // Combination of company actions
 export type Actions =
-    Load | NextPage | AppendCompanies
-    | SelectCompanies | DeselectCompanies | RemoveCompanies
+    Load | NextPage | AppendCompanies | SelectCompanies
+    | DeselectCompanies | RemoveCompanies | UpdateTotalPages
 
 // State initialization
 export const initState = {
     companies: [],
     selectedCompanies: [],
     page: 1,
+    totalPages: 0,
+    canPaginate: true,
 }
 
 {/*
@@ -80,10 +88,32 @@ export const companyReducer = (state: State, action: Actions)
             }
         case "NEXT_PAGE":
             console.log("CompanyReducer NEXT_PAGE called")
-            return {
-                ...state,
-                page: state.page += action.payload,
+            console.log(state)
+
+            {/*
+                Control pagination by making sure the defined states
+                are only changed when there is a reason to paginate.
+                If the totalPages is larger than the page being accessed,
+                then we set the canPaginate to false.
+                
+                The canPaginate state can then be used by a component
+                to determine whether pagination is allowed in this context.
+            */}
+            if (state.totalPages === 0 || state.page < state.totalPages) {
+                console.log("paginated")
+                return {
+                    ...state,
+                    page: action.payload.page,
+                    totalPages: action.payload.totalPages,
+                }
+            } else {
+                console.log("not paginated")
+                return {
+                    ...state,
+                    canPaginate: false
+                }
             }
+
         case "APPEND_COMPANIES":
             console.log("CompanyReducer APPEND_COMPANIES called")
             localStorage.setItem(
