@@ -9,14 +9,20 @@
 
 import React, {
   useCallback,
+  useEffect,
+  useReducer,
+  useRef,
 } from "react"
 import Card from "@/components/atoms/card"
 import Arrow from "@/components/assets/svg/Arrow"
 import NameBadge from "@/components/atoms/bage/nameBadge"
-import { Companies } from "@/components/utils/types/companyType"
 import { Company } from "@/components/utils/interfaces/companyInterface"
 import { ICompanyContextValue } from "@/components/utils/contexts/companyContext"
 import CheckBox from "@/components/atoms/input/checkbox"
+import {
+  companyReducer,
+  initState
+} from "@/components/utils/contexts/companyContext"
 
 
 {/*
@@ -37,16 +43,47 @@ import CheckBox from "@/components/atoms/input/checkbox"
 */}
 interface Props {
   cardItemClassName?: string,
-  dataSource: Companies,
   header?: string,
   companyState: ICompanyContextValue
 }
 
 const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
   const {
-    dataSource = [],
     companyState: { state, dispatch },
   } = props
+
+  // setting up the list ref for infinite scrolling
+  const listRef = useRef<HTMLDivElement>(null)
+
+  // setting up of the reducer hook
+  const [companyState = state, companyDispatch = dispatch] = useReducer(companyReducer, initState)
+
+  {/*
+    Helper function for fetching companies
+    from the '/api/companies' API endpoint.
+    Implements AbortController interface for
+    managing Fetch request and clean-up of
+    associated useEffect usage below.
+  */}
+  const loadCompanies = async (p:number, signal?:AbortSignal)
+  : Promise<Company[]> => {
+
+    let data:Company[] = [] // return variable
+
+    // begin fetching and assign result to 'data'
+    await fetch(`/api/companies?page=${p}&size=15}`, { signal })
+    .then((res) => res.json())
+    .then((res): void => { data = res.items })
+    .catch((err) => {
+      if (err.name === 'AbortError') {
+        console.log('Call aborted');
+      } else {
+        console.log("Unhandled exception: ", err)
+      }
+    })
+
+    return data
+  }
 
   {/*
     Helper callback function for checking if given item
@@ -67,15 +104,64 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
   */}
   const handleCheckSelect = (e:React.ChangeEvent<HTMLInputElement>, item:Company) => {
     if (!isSelectedCard(item)) {
-      dispatch({
+      companyDispatch({
         type: 'SELECT_COMPANIES',
         payload: item,
       })
     } else {
-      dispatch({
+      companyDispatch({
         type: 'DESELECT_COMPANIES',
         payload: item,
       })
+    }
+  }
+
+  // ==== useEffect calls ====
+  // =========START===========
+
+  // load companies from the API on initial render
+  useEffect(() => {
+    const fetchController = new AbortController()
+    const fetchSignal = fetchController.signal
+
+    {/*
+      Since data is loaded from a JSON file,
+      I wrap the fetch() call within setTimeout
+      to simulate a loading scenario.
+    */}
+    setTimeout(() => {
+      loadCompanies(1, fetchSignal)
+      .then((data) => {
+        companyDispatch({ type: "LOAD_COMPANIES", payload: data })
+        // setLoading(false)
+      })
+    }, 2000)
+    
+    return () => {
+      fetchController.abort()
+    }
+  }, [])
+
+  // helper function for handling inifinte scrolling
+  const handleScroll = () => {
+    if (listRef.current) {
+      const {
+        scrollTop,
+        scrollHeight,
+        clientHeight,
+      } = listRef.current
+
+      // monitor if scrolling reaches the bottom
+      console.log(`${scrollTop} -- ${clientHeight} -- ${scrollHeight}`)
+      if (scrollTop + clientHeight >= scrollHeight) {
+        const nextPage = state.page + 1
+        const pageStep = 1
+        loadCompanies(nextPage)
+        .then((res) => {
+          companyDispatch({ type: "NEXT_PAGE", payload: pageStep })
+          companyDispatch({ type: "APPEND_COMPANIES", payload: res })
+        })
+      }
     }
   }
 
@@ -87,65 +173,72 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
         gap-5
         p-5
         bg-slate-100
+        h-[90vh]
       `}
     >
-      {dataSource.map((item: Company): React.JSX.Element => (
-        <Card key={item.id}
-          className={`
-            !flex-[100%]
+      {companyState.companies && companyState.companies.length > 0 ?
+        companyState.companies.map((item: Company): React.JSX.Element => (
+          <Card key={item.id}
+            className={`
+              !flex-[100%]
 
-            md:grow-0
+              md:grow-0
 
-            md:!flex-[30%]
-            lg:!flex-[31%]
-            xl:!flex-[32%]
-          `}
-        >
-            <div
-              className="
-                h-[100%]
-                flex
-                flex-col
-                justify-between
-              "
-            >
+              md:!flex-[30%]
+              lg:!flex-[31%]
+              xl:!flex-[32%]
+            `}
+          >
               <div
-                className="flex flex-[80%] gap-3 items-start"
-              >
-                <div className="flex-[10%]">
-                  <NameBadge name={item.name} />
-                </div>
-                <div className="flex-[85%] text-sm md:text-md xl:text-lg">{item.name}</div>
-                <div className="flex-[5%] flex justify-end">
-                  <CheckBox
-                    id={`company_cb_${item.id}`}
-                    checked={isSelectedCard(item)}
-                    onChange={(e) => handleCheckSelect(e, item)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-[20%] items-center">
-                <a
-                  className="
-                    ml-auto
-                    font-code
-                    text-[.6rem]
-                    font-bold
-                    text-slate-500
-                    uppercase
-                    tracking-wider
-
-                    md:text-[.7rem]
+                className="
+                  h-[100%]
+                  flex
+                  flex-col
+                  justify-between
                 "
-                  href={item.url}
-                  target="_blank">
-                    Explore website
-                </a>
-                <Arrow className="fill-slate-400" />
+              >
+                <div
+                  className="flex flex-[80%] gap-3 items-start"
+                >
+                  <div className="flex-[10%]">
+                    <NameBadge name={item.name} />
+                  </div>
+                  <div className="flex-[85%] text-sm md:text-md xl:text-lg">{item.name}</div>
+                  <div className="flex-[5%] flex justify-end">
+                    <CheckBox
+                      id={`company_cb_${item.id}`}
+                      checked={isSelectedCard(item)}
+                      onChange={(e) => handleCheckSelect(e, item)}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-[20%] items-center">
+                  <a
+                    className="
+                      ml-auto
+                      font-code
+                      text-[.6rem]
+                      font-bold
+                      text-slate-500
+                      uppercase
+                      tracking-wider
+
+                      md:text-[.7rem]
+                  "
+                    href={item.url}
+                    target="_blank">
+                      Explore website
+                  </a>
+                  <Arrow className="fill-slate-400" />
+                </div>
               </div>
-            </div>
-        </Card>
-      ))}
+          </Card>
+        )
+      ) : (
+        <div className="flex w-full h-full justify-center items-center">
+          <div className="text-lg">loading companies</div>
+        </div>
+      )}
     </div>
   )
 }

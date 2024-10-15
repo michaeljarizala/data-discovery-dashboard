@@ -40,6 +40,10 @@ Demo to this project is available on [Vercel](https://data-discovery-dashboard.v
 ### Static Data
 
 Another folder is`./components/data/` which contains all the static data we should have. Here we have the `companies.json` which is our primary mock data for the project. We can further enhance the whole app to fetch from a real data source such as an SQLite database, a NoSQL source, or even from a RDB. I strongly recommend to use [**Prisma**](https://www.prisma.io/) in this case to take advantage of the power of ORM.
+
+ ### Lazy Loading
+
+ Lazy loading is showcase to one of the components called CompanyList. Using React lazy and Suspense, this component is loaded only when needed.
  
 ## Preparation & Installation
 

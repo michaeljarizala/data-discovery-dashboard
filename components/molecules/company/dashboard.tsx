@@ -15,8 +15,8 @@
   on the selected items
 */}
 
-import React, { useEffect, useReducer, useRef, useState } from "react"
-import CompanyList from "@/components/organisms/company/companyList"
+import React, { useEffect, useReducer, useRef, useState, lazy, Suspense } from "react"
+// import CompanyList from "@/components/organisms/company/companyList"
 import Button from "@/components/atoms/button"
 import { Company } from "@/components/utils/interfaces/companyInterface"
 import {
@@ -27,6 +27,8 @@ import {
 import Skeleton from "@/components/atoms/skeleton"
 import Modal from "@/components/organisms/modal"
 import { modalInitState, modalReducer } from "@/components/utils/contexts/modalContext"
+
+const CompanyList = lazy(() => import("@/components/organisms/company/companyList"))
 
 
 // the main component
@@ -40,9 +42,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
 
   // setting up  of the modal reducer hook
   const [modalState, modalDispatch] = useReducer(modalReducer, modalInitState)
-
-  // setting up the list ref for infinite scrolling
-  const listRef = useRef<HTMLDivElement>(null)
 
   {/*
     Helper function for fetching companies
@@ -71,29 +70,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
     return data
   }
 
-  // helper function for handling inifinte scrolling
-  const handleScroll = () => {
-    if (listRef.current) {
-      const {
-        scrollTop,
-        scrollHeight,
-        clientHeight,
-      } = listRef.current
-
-      // monitor if scrolling reaches the bottom
-      console.log(`${scrollTop} -- ${clientHeight} -- ${scrollHeight}`)
-      if (scrollTop + clientHeight >= scrollHeight) {
-        const nextPage = state.page + 1
-        const pageStep = 1
-        loadCompanies(nextPage)
-        .then((res) => {
-          dispatch({ type: "NEXT_PAGE", payload: pageStep })
-          dispatch({ type: "APPEND_COMPANIES", payload: res })
-        })
-      }
-    }
-  }
-
   // helper function for handling data deletion
   const handleDeletion = () => {
     dispatch({
@@ -113,29 +89,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
     return () => setLoading(false)
   }, [])
 
-  // load companies from the API on initial render
-  useEffect(() => {
-    const fetchController = new AbortController()
-    const fetchSignal = fetchController.signal
-
-    {/*
-      Since data is loaded from a JSON file,
-      I wrap the fetch() call within setTimeout
-      to simulate a loading scenario.
-    */}
-    setTimeout(() => {
-      loadCompanies(1, fetchSignal)
-      .then((data) => {
-        dispatch({ type: "LOAD_COMPANIES", payload: data })
-        setLoading(false)
-      })
-    }, 2000)
-    
-    return () => {
-      fetchController.abort()
-    }
-  }, [])
-
   if (!loading && state.companies.length === 0) {
     return (
       <div className="w-full h-[100vh] flex align-center justify-center p-20">
@@ -150,22 +103,19 @@ const Dashboard: React.FC = (): React.JSX.Element => {
     <CompanyProvider>
       <div>
         <div
-          ref={listRef}
           className="h-[90vh] xl:h-[80vh] mx-auto overflow-y-scroll"
-          onScroll={handleScroll}
         >
-            {loading ? (
-              <div className="flex flex-wrap gap-2 p-5">
-                <Skeleton /> <Skeleton /> <Skeleton />
-                <Skeleton /> <Skeleton /> <Skeleton />
-              </div>
-            ) : (
-              <CompanyList
-                dataSource={state.companies}
-                header="name"
-                companyState={{ state, dispatch }}
-              />
-            )}
+          <Suspense fallback={(
+            <div className="flex flex-wrap gap-2 p-5">
+              <Skeleton /> <Skeleton /> <Skeleton />
+              <Skeleton /> <Skeleton /> <Skeleton />
+            </div>
+          )}>
+            <CompanyList
+              header="name"
+              companyState={{ state, dispatch }}
+            />
+          </Suspense>
         </div>
         <div
           className="
