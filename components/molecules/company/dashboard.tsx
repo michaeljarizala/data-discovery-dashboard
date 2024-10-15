@@ -110,18 +110,19 @@ const Dashboard: React.FC = (): React.JSX.Element => {
           flex-[80%]
         ">
             <div className="
-            flex-[80%]
-            text-md
-            md:text-xl
-            xl:text-2xl
-            font-semibold
-            uppercase
-            tracking-wider
+              flex-[80%]
+              text-md
+              md:text-xl
+              xl:text-2xl
+              font-semibold
+              uppercase
+              tracking-wider
+              text-black
           ">
 
             Companies
           </div>
-          <div className="text-slate-400 text-sm md:text-md lg:text-lg">
+          <div className="text-slate-500 text-sm md:text-md lg:text-lg">
             List of active companies
           </div>
         </div>

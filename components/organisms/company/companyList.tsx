@@ -196,7 +196,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
                   <div className="flex-[10%]">
                     <NameBadge name={item.name} />
                   </div>
-                  <div className="flex-[85%] text-sm md:text-md xl:text-lg">{item.name}</div>
+                  <div className="flex-[85%] text-sm md:text-md xl:text-lg text-black">{item.name}</div>
                   <div className="flex-[5%] flex justify-end">
                     <CheckBox
                       id={`company_cb_${item.id}`}
@@ -229,7 +229,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
         )
       ) : (
         <div className="flex w-full h-full justify-center items-center">
-          <div className="text-lg">loading companies</div>
+          <div className="text-lg text-black">loading companies</div>
         </div>
       )}
     </div>
