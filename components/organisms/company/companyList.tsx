@@ -140,7 +140,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
     return () => {
       fetchController.abort()
     }
-  }, [])
+  }, [companyDispatch])
 
   // helper function for handling inifinte scrolling
   const handleScroll = () => {

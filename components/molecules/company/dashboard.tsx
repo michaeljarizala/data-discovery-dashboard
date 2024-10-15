@@ -16,9 +16,7 @@
 */}
 
 import React, { useEffect, useReducer, useState, lazy, Suspense } from "react"
-// import CompanyList from "@/components/organisms/company/companyList"
 import Button from "@/components/atoms/button"
-import { Company } from "@/components/utils/interfaces/companyInterface"
 import {
   CompanyProvider,
   companyReducer,
@@ -42,33 +40,6 @@ const Dashboard: React.FC = (): React.JSX.Element => {
 
   // setting up  of the modal reducer hook
   const [modalState, modalDispatch] = useReducer(modalReducer, modalInitState)
-
-  {/*
-    Helper function for fetching companies
-    from the '/api/companies' API endpoint.
-    Implements AbortController interface for
-    managing Fetch request and clean-up of
-    associated useEffect usage below.
-  */}
-  const loadCompanies = async (p:number, signal?:AbortSignal)
-  : Promise<Company[]> => {
-
-    let data:Company[] = [] // return variable
-
-    // begin fetching and assign result to 'data'
-    await fetch(`/api/companies?page=${p}&size=15}`, { signal })
-    .then((res) => res.json())
-    .then((res): void => { data = res.items })
-    .catch((err) => {
-      if (err.name === 'AbortError') {
-        console.log('Call aborted');
-      } else {
-        console.log("Unhandled exception: ", err)
-      }
-    })
-
-    return data
-  }
 
   // helper function for handling data deletion
   const handleDeletion = () => {
