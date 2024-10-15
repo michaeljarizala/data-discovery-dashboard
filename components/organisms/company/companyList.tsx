@@ -99,23 +99,25 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
   }, [state.selectedCompanies])
 
   {/*
-    Function for handling the change event
-    of the checkbox input in each company in the list
+    Function for handling the click event
+    on each company card
   */}
-  const handleCheckSelect = (item:Company, e?:React.ChangeEvent<HTMLInputElement>) => {
-    e?.preventDefault()
+  const handleCompanySelect = (item:Company
+    , e?:React.MouseEvent<HTMLDivElement>|React.ChangeEvent<HTMLInputElement>) => {
+      
+      e?.stopPropagation()
 
-    if (!isSelectedCard(item)) {
-      dispatch({
-        type: 'SELECT_COMPANIES',
-        payload: item,
-      })
-    } else {
-      dispatch({
-        type: 'DESELECT_COMPANIES',
-        payload: item,
-      })
-    }
+      if (!isSelectedCard(item)) {
+        dispatch({
+          type: 'SELECT_COMPANIES',
+          payload: item,
+        })
+      } else {
+        dispatch({
+          type: 'DESELECT_COMPANIES',
+          payload: item,
+        })
+      }
   }
 
   // ==== useEffect calls ====
@@ -218,7 +220,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
                 >
                   <div
                     className="flex flex-[80%] gap-3 items-start cursor-pointer"
-                    onClick={() => handleCheckSelect(item)}
+                    onClick={(e) => handleCompanySelect(item, e)}
                   >
                     <div className="flex-[10%]">
                       <NameBadge name={item.name} />
@@ -228,7 +230,7 @@ const CompanyList: React.FC<Props> = (props: Props): React.JSX.Element => {
                       <CheckBox
                         id={`company_cb_${item.id}`}
                         checked={isSelectedCard(item)}
-                        onChange={() => handleCheckSelect(item)}
+                        onChange={(e) => handleCompanySelect(item, e)}
                       />
                     </div>
                   </div>
